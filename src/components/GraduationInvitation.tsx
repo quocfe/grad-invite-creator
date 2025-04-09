@@ -13,7 +13,8 @@ const GraduationInvitation: React.FC = () => {
         <div className="flex justify-center mb-6">
           <GraduationCap size={60} className="text-[hsl(var(--gold))]" />
         </div>
-        
+        {/* oke
+         */}
         <h1 className="text-3xl font-bold mb-2 navy-accent">THIỆP THÔNG BÁO</h1>
         <div className="w-20 h-1 bg-[hsl(var(--gold))] mx-auto mb-6"></div>
         
