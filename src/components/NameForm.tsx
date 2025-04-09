@@ -1,9 +1,20 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useInvitation } from '@/context/InvitationContext';
 import { GraduationCap } from 'lucide-react';
+
+// Utility function để remove dấu tiếng Việt và normalize chữ thường
+const normalizeVietnamese = (str: string) => {
+  return str
+    .normalize("NFD") // Tách dấu
+    .replace(/[\u0300-\u036f]/g, "") // Xoá dấu
+    .toLowerCase();
+};
+
+const allowList = [
+  "gấm", "diễm", "nhâm", "vy", "quân", "phương anh", "huỳnh"
+].map(normalizeVietnamese); // Chuẩn hoá sẵn để so sánh
 
 const NameForm: React.FC = () => {
   const { setGuestName, setNameEntered } = useInvitation();
@@ -12,12 +23,23 @@ const NameForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name.trim()) {
       setError("Vui lòng nhập tên của bạn");
       return;
     }
-    
+
+    const normalized = normalizeVietnamese(name);
+
+    const isAllowed = allowList.some((allowedName) =>
+      normalized.includes(allowedName)
+    );
+
+    if (!isAllowed) {
+      setError("Tên bạn không có trong danh sách nhé 🙁");
+      return;
+    }
+
     setGuestName(name);
     setNameEntered(true);
   };
@@ -27,15 +49,15 @@ const NameForm: React.FC = () => {
       <div className="flex justify-center mb-6">
         <GraduationCap size={60} className="text-[hsl(var(--gold))] confetti-animation" />
       </div>
-      
+
       <h2 className="text-2xl font-bold text-center mb-6 navy-accent">
-        Chào mừng bạn đến với lễ tốt nghiệp
+        Chào nha, Quốc tốt nghiệp rồi nè!
       </h2>
-      
+
       <p className="text-center mb-8 text-gray-600">
-        Vui lòng nhập tên của bạn để xem thiệp mời
+        Hãy nhập tên của bạn để xem thông báo nhé!
       </p>
-      
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <Input
@@ -49,12 +71,12 @@ const NameForm: React.FC = () => {
           />
           {error && <p className="text-red-500 mt-2 text-sm">{error}</p>}
         </div>
-        
+
         <Button 
           type="submit" 
           className="w-full py-6 bg-[hsl(var(--navy))] hover:bg-[hsl(var(--navy)/_0.8)] text-white font-semibold"
         >
-          Xem thiệp mời
+          Bấm dô đây đi!
         </Button>
       </form>
     </div>
